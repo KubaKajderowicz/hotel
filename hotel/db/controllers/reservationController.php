@@ -98,8 +98,40 @@ class ReservationController extends Dbh
                         <th scope="row">' . $row['kamernummer'] . '</th>
                         <td>' . $row['van'] . '</td>
                         <td>' . $row['tot'] . '</td>
+                        <td>
+                        <a href="./viewreservation.php?roomid=' . $row['id'] . '"><span class="fa fa-eye"></span></a>
                         <a href="./editreservation.php?roomid=' . $row['id'] . '"><span class="fa fa-pencil"></span></a>
                         <a href="./db/inc/deleteReservation.inc.php?roomid=' . $row['id'] . '"><span class="fa fa-trash"></span></a></td>
+                        </tr>';
+                    }
+                }
+            }
+        }
+    }
+
+    public function getReservationInfo($resid)
+    {
+        // Prepare a select statement
+        $sql = "SELECT R.id, R.kamernummer, R.van, R.tot, R.bookedby, U.id, U.name FROM reservations R LEFT JOIN users U ON R.bookedby = U.id WHERE R.id = :id";
+
+        if ($stmt = $this->connect()->prepare($sql)) {
+
+            // Bind params;
+            $stmt->bindParam(":id", $resid);
+
+            if ($stmt->execute()) {
+
+                if ($stmt->rowCount() > 0) {
+                    // fetch reservation
+                    while ($row = $stmt->fetch()) {
+                        //die(print_r($row));
+
+                        echo '<tr>
+                        <th scope="row">' . $row['id'] . '</th>
+                        <td>' . $row['kamernummer'] . '</td>
+                        <td>' . $row['name'] . '</td>
+                        <td>' . $row['van'] . '</td>
+                        <td>' . $row['tot'] . '</td>
                         </tr>';
                     }
                 }
